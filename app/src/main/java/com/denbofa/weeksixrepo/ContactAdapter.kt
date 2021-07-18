@@ -5,13 +5,16 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.denbofa.weeksixrepo.databinding.ContactListItemBinding
 
-class ContactAdapter(val contactItems: List<ContactModel>): RecyclerView.Adapter<ContactAdapter.ViewHolder>() {
+class ContactAdapter(val contactItems: List<ContactModel>, val clickerFunc: (ContactModel)-> Unit): RecyclerView.Adapter<ContactAdapter.ViewHolder>() {
 
     inner class  ViewHolder(val binding: ContactListItemBinding): RecyclerView.ViewHolder(binding.root){
 
         fun bind(contactItem: ContactModel){
             binding.userName.text = contactItem.userFullName
             binding.userNumber.text = contactItem.userPhoneNumber
+            binding.root.setOnClickListener {
+                clickerFunc(contactItem)
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package com.denbofa.weeksixrepo
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -24,17 +25,24 @@ class MainActivity : AppCompatActivity() {
 
         myContactList = mutableListOf()
 
-        myContactAdapter = ContactAdapter(myContactList)
+        myContactAdapter = ContactAdapter(myContactList){
+            val intent = Intent(this, ContactDetailsActivity::class.java)
+            intent.putExtra("name", it.userFullName)
+            intent.putExtra("number", it.userPhoneNumber)
+            intent.putExtra("email", it.userEmail)
+            startActivity(intent)
+        }
         binding.recyclerView.adapter = myContactAdapter
 
         val  db = Room.databaseBuilder(applicationContext, ContactDatabase::class.java, "contact-database"
         ).allowMainThreadQueries().build()
 
         viewModel.getAllContactItems(db).observe(this, Observer<List<ContactModel>> {
-            myContactAdapter = ContactAdapter(myContactList)
+            myContactAdapter = ContactAdapter(it){}
             binding.recyclerView.adapter = myContactAdapter
             myContactAdapter.notifyDataSetChanged()
         })
+
 
         binding.button.setOnClickListener {
             val name: String = binding.contactName.text.toString()
